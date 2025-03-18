@@ -15,8 +15,8 @@ class TestTextNode(unittest.TestCase):
 		self.assertNotEqual(node, node2)
 
 	def test_eq2(self):
-		node = TextNode("I am a woman", TextType.NORMAL)
-		node2 = TextNode("I am a woman", TextType.NORMAL, "url.url.url")
+		node = TextNode("I am a woman", TextType.TEXT)
+		node2 = TextNode("I am a woman", TextType.TEXT, "url.url.url")
 		self.assertNotEqual(node,node2)
 if __name__ == "__main__":
     unittest.main()

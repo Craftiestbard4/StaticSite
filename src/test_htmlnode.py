@@ -5,12 +5,11 @@ class TestHTMLNode(unittest.TestCase):
 	def test_init(self):
 		node = HTMLNode(None,None,None,{ "href": "https://www.google.com", "target": "_blank", })
 		node1 = HTMLNode("test","test","test","test")
-		print(node)
-		print(node1)
+		self.assertNotEqual(node, node1)
 
 	def test_props_to_html(self):
 		node = HTMLNode(None,None,None,{"href": "https://www.google.com", "target": "_blank"})
-		print(node.props_to_html())
+		self.assertNotEqual(node.props_to_html, 'href="https://www.google.com" target="_blank"')
 
 	def test_leafnode(self):
 		node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
