@@ -35,3 +35,59 @@ class TestDelimiter(unittest.TestCase):
 		self.maxDiff=None
 		text = "This is **text** with **text** in _italics_ and `code` **as well** as _more_**text** and an ![obi wan image](https://obiwan.org/)"
 		self.assertListEqual([TextNode("This is ", TextType.TEXT),TextNode("text", TextType.BOLD),TextNode(" with ",TextType.TEXT),TextNode("text",TextType.BOLD),TextNode(" in ",TextType.TEXT),TextNode("italics",TextType.ITALIC),TextNode(" and ",TextType.TEXT),TextNode("code",TextType.CODE),TextNode(" ",TextType.TEXT),TextNode("as well",TextType.BOLD),TextNode(" as ",TextType.TEXT),TextNode("more",TextType.ITALIC),TextNode("text",TextType.BOLD),TextNode(" and an ",TextType.TEXT),TextNode("obi wan image", TextType.IMAGE,"https://obiwan.org/")], text_to_textnodes(text))
+
+	def test_markdown_to_blocks(self):
+		self.maxDiff=None
+		md = """This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+        """
+		blocks = markdown_to_blocks(md)
+		self.assertEqual(blocks,["This is **bolded** paragraph","This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line","- This is a list\n- with items",],)
+
+	def test_block_typer(self):
+		block = "# Heading"
+		block2 = "## Heading"
+		block3 = "### Heading"
+		block4 = "#### Heading"
+		block5 = "##### Heading"
+		block6 = "###### Heading"
+		block7 = "####### Heading"
+		block8 = "#Heading"
+		results = [block_to_block_type(block),block_to_block_type(block2),block_to_block_type(block3),block_to_block_type(block4),block_to_block_type(block5),block_to_block_type(block6),block_to_block_type(block7),block_to_block_type(block8)]
+		self.assertListEqual([BlockType.HEADING,BlockType.HEADING,BlockType.HEADING,BlockType.HEADING,BlockType.HEADING,BlockType.HEADING,BlockType.PARAGRAPH,BlockType.PARAGRAPH], results)
+
+	def test_block_typer2(self):
+		block = "```code```"
+		block2 = "``` code ```"
+		results = [block_to_block_type(block),block_to_block_type(block2)]
+		self.assertListEqual([BlockType.CODE,BlockType.CODE], results)
+
+	def test_block_typer3(self):
+		block = ">Quote Quote Quote"
+		block2 = "> Quote Quote Quote"
+		block3 = " Not a > Quote"
+		block4 = "Also > Not > a > Quote"
+		results = [block_to_block_type(block),block_to_block_type(block2),block_to_block_type(block3),block_to_block_type(block4)]
+		self.assertListEqual([BlockType.QUOTE,BlockType.QUOTE,BlockType.PARAGRAPH,BlockType.PARAGRAPH], results)
+
+	def test_blodk_typer4(self):
+		block = """- list\n- list\n- list\n- list"""
+		block2 = "-not a list"
+		block3 = "-- still not a list"
+		block4 = """- still
+-not
+a
+- list"""
+		results = [block_to_block_type(block),block_to_block_type(block2),block_to_block_type(block3),block_to_block_type(block4)]
+		self.assertListEqual([BlockType.UNORDERED,BlockType.PARAGRAPH,BlockType.PARAGRAPH,BlockType.PARAGRAPH], results)
+	def test_block_typer5(self):
+		block= "1. ordered\n2. list"
+		block2= "1. not\n1. ordered\n1. list"
+		block3= "1.still\n2.not\n3.ordered\n4.list"
+		results = [block_to_block_type(block),block_to_block_type(block2),block_to_block_type(block3)]
+		self.assertListEqual(results, [BlockType.ORDERED,BlockType.PARAGRAPH,BlockType.PARAGRAPH])

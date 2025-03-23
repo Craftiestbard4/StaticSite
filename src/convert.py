@@ -1,5 +1,6 @@
 from htmlnode import *
 from textnode import *
+from delimiter import *
 
 def txttohtml(text_node):
 	match (text_node.text_type):
@@ -23,3 +24,19 @@ def txttohtml(text_node):
 			return html_node
 		case _:
 			raise Exception("invalid text type")
+
+def markdown_to_html_node(markdown):
+	blocks = markdown_to_blocks(markdown)
+	for block in blocks:
+		type = block_to_block_type(block)
+		if type == BlockType.HEADING:
+			level = 0
+			for char in block:
+				if char == "#":
+					level += 1
+				else:
+					break
+			content = block[level:].strip()
+			heading_tag = f"h{level}"
+			nodes = text_to_textnodes(content)
+			

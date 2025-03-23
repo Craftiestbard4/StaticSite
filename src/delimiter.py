@@ -100,3 +100,27 @@ def text_to_textnodes(text):
 	nodes = split_nodes_link(nodes)
 	nodes = split_nodes_image(nodes)
 	return nodes
+
+def markdown_to_blocks(markdown):
+	blocks = markdown.split("\n\n")
+	clean_blocks = []
+	for block in blocks:
+		stripped_block = block.strip()
+		if stripped_block:
+			clean_blocks.append(stripped_block)
+	return clean_blocks
+
+def block_to_block_type(block):
+	lines = [line.strip() for line in block.split("\n")]
+	if re.match(r"^#{1,6} ", block):
+		return BlockType.HEADING
+	elif re.fullmatch(r"(```.*```)", block, flags=re.DOTALL):
+		return BlockType.CODE
+	elif all(line.startswith(">") for line in lines):
+		return BlockType.QUOTE
+	elif all(line.strip().startswith("- ") for line in lines):
+		return BlockType.UNORDERED
+	elif all(line.startswith(f"{i+1}. ") for i, line in enumerate(lines)) and lines[0].startswith("1. "):
+		return BlockType.ORDERED
+	else:
+		return BlockType.PARAGRAPH
