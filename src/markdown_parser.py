@@ -35,9 +35,9 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
 		if os.path.isfile(item_path) and item_path.endswith('.md'):
 			basename = os.path.splitext(item)[0]
 			dest_file_path = os.path.join(dest_dir_path, basename + '.html')
-			generate_page(item_path, template_path, dest_file_path)
+			generate_page(item_path, template_path, dest_file_path, basepath)
 		else:
 			new_dest_dir = os.path.join(dest_dir_path, item)
 			os.makedirs(new_dest_dir, exist_ok=True)
 			new_source_dir = item_path
-			generate_pages_recursive(new_source_dir, template_path, new_dest_dir)
+			generate_pages_recursive(new_source_dir, template_path, new_dest_dir, basepath)
