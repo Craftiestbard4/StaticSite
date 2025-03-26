@@ -31,4 +31,5 @@ def copy_directory(source, destination):
 def main():
 	copy_static()
 	generate_pages_recursive("content", "template.html", "docs", basepath)
+	print(basepath)
 main()

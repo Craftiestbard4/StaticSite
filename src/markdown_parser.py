@@ -22,7 +22,9 @@ def generate_page(from_path, template_path, dest_path, basepath="/"):
 	print(f"generating {title} from {from_path} to {dest_path} using {template_path}")
 	html_node = markdown_to_html_node(md)
 	html = html_node.to_html()
-	full_html = template.replace("{{ Title }}", title).replace("{{ Content }}", html).replace('href="/', f'href="{basepath}').replace('src="/',f'src="{basepath}')
+	full_html = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
+	full_html = full_html.replace('href="/', f'href="{basepath}')
+	full_html = full_html.replace('src="/',f'src="{basepath}')
 	dest_dir = os.path.dirname(dest_path)
 	if dest_dir:
 		os.makedirs(dest_dir, exist_ok=True)
