@@ -1,3 +1,4 @@
+import sys
 from textnode import *
 import os
 import shutil
@@ -6,11 +7,14 @@ from textnode import *
 from delimiter import *
 from convert import *
 from markdown_parser import *
+basepath = "/"
+if len(sys.argv)>1:
+	basepath = sys.argv[1]
 def copy_static():
-	if os.path.exists("public"):
-		shutil.rmtree("public")
-	os.mkdir("public")
-	copy_directory("static", "public")
+	if os.path.exists("docs"):
+		shutil.rmtree("docs")
+	os.mkdir("docs")
+	copy_directory("static", "docs")
 
 def copy_directory(source, destination):
 	for item in os.listdir(source):
@@ -26,5 +30,5 @@ def copy_directory(source, destination):
 
 def main():
 	copy_static()
-	generate_pages_recursive("content", "template.html", "public")
+	generate_pages_recursive("content", "template.html", "docs", basepath)
 main()
